@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 function ShepherdingCourse() {
   const [currentStep, setCurrentStep] = useState(0);
@@ -47,49 +48,80 @@ function ShepherdingCourse() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-purple-100 to-indigo-200 p-6">
-      <div className="bg-white rounded-2xl shadow-lg p-8 max-w-2xl w-full transition-all duration-500">
-        <h1 className="text-3xl font-bold text-center text-indigo-700 mb-6">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 p-6">
+      <motion.div
+        className="bg-white rounded-2xl shadow-2xl p-8 max-w-3xl w-full relative overflow-hidden"
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        {/* Title */}
+        <h1 className="text-4xl font-extrabold text-center bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-6">
           Shepherding 101
         </h1>
 
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-800 mb-3">
-            {courseContent[currentStep].title}
-          </h2>
-          <p className="text-gray-700 leading-relaxed">
-            {courseContent[currentStep].text}
-          </p>
+        {/* Animated Card */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentStep}
+            initial={{ opacity: 0, x: 60 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -60 }}
+            transition={{ duration: 0.5 }}
+            className="bg-gradient-to-tr from-indigo-50 via-purple-50 to-pink-50 rounded-xl shadow-md p-6 mb-8"
+          >
+            <h2 className="text-2xl font-semibold text-indigo-800 mb-3">
+              {courseContent[currentStep].title}
+            </h2>
+            <p className="text-gray-700 leading-relaxed">
+              {courseContent[currentStep].text}
+            </p>
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Progress Bar */}
+        <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
+          <motion.div
+            className="bg-gradient-to-r from-indigo-500 to-purple-600 h-2 rounded-full"
+            initial={{ width: 0 }}
+            animate={{
+              width: `${((currentStep + 1) / courseContent.length) * 100}%`,
+            }}
+            transition={{ duration: 0.5 }}
+          />
         </div>
 
+        {/* Controls */}
         <div className="flex justify-between items-center">
           <button
             onClick={handlePrev}
             disabled={currentStep === 0}
-            className={`px-4 py-2 rounded-lg text-white font-medium transition-colors ${
+            className={`px-5 py-2 rounded-lg font-medium transition-all ${
               currentStep === 0
-                ? "bg-gray-300 cursor-not-allowed"
-                : "bg-indigo-600 hover:bg-indigo-700"
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-indigo-600 text-white hover:bg-indigo-700 shadow-md"
             }`}
           >
             Previous
           </button>
-          <span className="text-gray-600 text-sm">
+
+          <span className="text-gray-600 text-sm font-medium">
             Step {currentStep + 1} of {courseContent.length}
           </span>
+
           <button
             onClick={handleNext}
             disabled={currentStep === courseContent.length - 1}
-            className={`px-4 py-2 rounded-lg text-white font-medium transition-colors ${
+            className={`px-5 py-2 rounded-lg font-medium transition-all ${
               currentStep === courseContent.length - 1
-                ? "bg-gray-300 cursor-not-allowed"
-                : "bg-indigo-600 hover:bg-indigo-700"
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-purple-600 text-white hover:bg-purple-700 shadow-md"
             }`}
           >
             Next
           </button>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
